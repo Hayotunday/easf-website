@@ -24,11 +24,18 @@ export default function AboutPage() {
           </h2>
           <div className="prose prose-lg font-serif text-muted-foreground">
             <p className="text-xl leading-relaxed">
-              Founded in 2024, the Education for Africa Scholarship Foundation
-              (EASF) is a private, non-profit organization committed to breaking
+              For over two decades, the Education for Africa Scholarship
+              Foundation has been at the forefront of youth empowerment in
+              Nigeria. We believe that investing in education and skills
+              development is the key to unlocking the unlimited potential of
+              Nigerian youth. Our comprehensive programs have impacted thousands
+              of lives, creating leaders, entrepreneurs, and change-makers who
+              are driving Nigeria&apos; economic growth and social development.
+              EASF is a private, non-profit organization committed to breaking
               down financial barriers that prevent talented African youth from
               accessing quality higher education.
             </p>
+            <br />
             <p className="text-xl leading-relaxed">
               We believe talent is universal, but opportunity is not. Our
               mission is to identify high-achieving students across Africa and
@@ -163,8 +170,8 @@ export default function AboutPage() {
           Join Our Mission
         </h2>
         <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-          Whether you're a student, mentor, or donor — together we can build a
-          brighter future for Africa.
+          Whether you&apos;re a student, mentor, or donor — together we can
+          build a brighter future for Africa.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button
