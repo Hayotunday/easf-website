@@ -7,60 +7,54 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Navbar() {
   return (
-    <nav className="sticky top-0 z-50 border-b bg-white/95 dark:bg-background/95 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl">
+    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-background/80 backdrop-blur-xl border-b border-border/40 transition-smooth">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-lg transition-smooth group-hover:shadow-soft">
             E
           </div>
           <div>
-            <div className="font-heading text-3xl font-bold tracking-tight text-primary">
+            <div className="font-heading text-xl font-bold text-primary">
               EASF
             </div>
-            <p className="text-xs text-muted-foreground -mt-1">
+            <p className="text-xs text-muted-foreground -mt-0.5">
               Education for Africa
             </p>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link href="/" className="hover:text-primary transition-colors">
+        <div className="hidden md:flex items-center gap-8 text-sm">
+          <Link href="/" className="text-foreground hover:text-primary transition-smooth font-medium">
             Home
           </Link>
-          <Link href="/about" className="hover:text-primary transition-colors">
+          <Link href="/about" className="text-foreground hover:text-primary transition-smooth font-medium">
             About Us
           </Link>
           <Link
             href="/scholarships"
-            className="hover:text-primary transition-colors"
+            className="text-foreground hover:text-primary transition-smooth font-medium"
           >
             Scholarships
           </Link>
           <Link
             href="/courses"
-            className="hover:text-primary transition-colors"
+            className="text-foreground hover:text-primary transition-smooth font-medium"
           >
             Courses
           </Link>
-          <Link
-            href="/apply"
-            className="hover:text-primary transition-colors text-center"
-          >
-            Apply
-          </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <ThemeToggle />
-          {/* <Button
+          <Button
             asChild
-            className="bg-gold hover:bg-amber-500 text-primary font-semibold hidden md:block"
+            className="bg-primary hover:bg-primary/90 text-white font-semibold hidden md:flex transition-smooth"
           >
-            <Link href="/apply" className="text-center">
+            <Link href="/apply">
               Apply Now
             </Link>
-          </Button> */}
+          </Button>
 
           {/* Mobile Menu */}
           <Sheet>
@@ -71,22 +65,22 @@ export default function Navbar() {
             </SheetTrigger>
             <SheetContent>
               <div className="flex flex-col gap-6 mt-8 text-lg">
-                <Link href="/" className="hover:text-primary">
+                <Link href="/" className="text-foreground hover:text-primary font-medium">
                   Home
                 </Link>
-                <Link href="/about" className="hover:text-primary">
+                <Link href="/about" className="text-foreground hover:text-primary font-medium">
                   About Us
                 </Link>
-                <Link href="/scholarships" className="hover:text-primary">
+                <Link href="/scholarships" className="text-foreground hover:text-primary font-medium">
                   Scholarships
                 </Link>
-                <Link href="/courses" className="hover:text-primary">
+                <Link href="/courses" className="text-foreground hover:text-primary font-medium">
                   Courses
                 </Link>
-                <Link href="/apply" className="hover:text-primary">
+                <Link href="/apply" className="text-foreground hover:text-primary font-medium">
                   Apply
                 </Link>
-                <Link href="/donate" className="hover:text-primary">
+                <Link href="/donate" className="text-foreground hover:text-primary font-medium">
                   Donate
                 </Link>
               </div>
