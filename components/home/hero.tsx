@@ -32,7 +32,7 @@ export default function Hero() {
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/images/hero-students.svg')" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/75 to-primary/85" />
+      <div className="absolute inset-0 bg-linear-to-br from-primary/80 via-primary/75 to-primary/85" />
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-white text-center">
         <motion.div

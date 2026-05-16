@@ -88,7 +88,7 @@ export default function ProgramsPreview() {
                   className="h-64 bg-cover bg-center relative overflow-hidden"
                   style={{ backgroundImage: `url(${program.image})` }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.3 }}
