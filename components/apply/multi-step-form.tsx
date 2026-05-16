@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
@@ -17,14 +18,17 @@ const steps = [
   "Essays",
   "Documents",
   "Review & Submit",
+  "Confirmation",
 ];
 
 export default function MultiStepForm() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [applicationData, setApplicationData] = useState<ApplicationData>(
     defaultApplicationData,
   );
   const [submitting, setSubmitting] = useState(false);
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
   const next = () => setStep((s) => Math.min(steps.length - 1, s + 1));
   const prev = () => setStep((s) => Math.max(0, s - 1));
@@ -44,6 +48,7 @@ export default function MultiStepForm() {
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Submission failed");
       toast.success("Application submitted successfully!");
+      setSubmissionSuccess(true);
       setStep(steps.length - 1);
     } catch (err: any) {
       console.error(err);
@@ -100,23 +105,43 @@ export default function MultiStepForm() {
         />
       )}
       {step === 4 && <ReviewSubmit data={applicationData} />}
+      {step === 5 && submissionSuccess && (
+        <div className="space-y-8 text-center">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-700">
+            <span className="text-3xl font-semibold">✓</span>
+          </div>
+          <h3 className="text-3xl font-semibold">Thank you for applying!</h3>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Your application has been submitted successfully. We will review it
+            and notify you by email shortly.
+          </p>
+          <Button
+            onClick={() => router.push("/")}
+            className="mx-auto bg-gold hover:bg-amber-500 text-primary px-10"
+          >
+            Return Home
+          </Button>
+        </div>
+      )}
 
-      <div className="flex justify-between mt-12 pt-8 border-t">
-        <Button variant="outline" onClick={prev} disabled={step === 0}>
-          Previous
-        </Button>
-        <Button
-          onClick={step === steps.length - 1 ? submitApplication : next}
-          className="bg-gold hover:bg-amber-500 text-primary px-10"
-          disabled={submitting}
-        >
-          {step === steps.length - 1
-            ? submitting
-              ? "Submitting..."
-              : "Submit Application"
-            : "Continue"}
-        </Button>
-      </div>
+      {step !== steps.length - 1 && (
+        <div className="flex justify-between mt-12 pt-8 border-t">
+          <Button variant="outline" onClick={prev} disabled={step === 0}>
+            Previous
+          </Button>
+          <Button
+            onClick={step === steps.length - 2 ? submitApplication : next}
+            className="bg-gold hover:bg-amber-500 text-primary px-10"
+            disabled={submitting}
+          >
+            {step === steps.length - 2
+              ? submitting
+                ? "Submitting..."
+                : "Submit Application"
+              : "Continue"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

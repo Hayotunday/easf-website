@@ -10,7 +10,7 @@ const featuredPrograms = [
     subtitle: "Undergraduate & Professional Degrees",
     description:
       "Accountancy, Computer Science, Business Administration, Mass Communication, Electrical Electronics & more",
-    image: "/images/academic.jpg",
+    image: "/images/academic.svg",
     icon: "🎓",
     link: "/courses",
   },
@@ -19,7 +19,7 @@ const featuredPrograms = [
     subtitle: "Hands-on Skills Development",
     description:
       "Computer Repair, Electrical Installation, Garment Making, Catering, P.O.P Installation, Painting Tech & more",
-    image: "/images/vocational.jpg",
+    image: "/images/vocational.svg",
     icon: "🛠️",
     link: "/courses",
   },
@@ -28,7 +28,7 @@ const featuredPrograms = [
     subtitle: "Developing Future African Leaders",
     description:
       "Personal development, career guidance, networking, and leadership training for all scholars",
-    image: "/images/leadership.jpg",
+    image: "/images/leadership.svg",
     icon: "🌟",
     link: "/about",
   },

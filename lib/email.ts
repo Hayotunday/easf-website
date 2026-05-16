@@ -1,21 +1,19 @@
 import nodemailer from "nodemailer";
 import type { ApplicationData } from "@/types/application-types";
 
-const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_TO } = process.env;
+const { EMAIL_USER, EMAIL_PASS, EMAIL_TO } = process.env;
 
-if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS || !EMAIL_TO) {
+if (!EMAIL_USER || !EMAIL_PASS || !EMAIL_TO) {
   throw new Error(
-    "Missing SMTP configuration. Add SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM, and EMAIL_TO to your environment.",
+    "Missing SMTP configuration. Add EMAIL_USER, EMAIL_PASS, and EMAIL_TO to your environment.",
   );
 }
 
 const transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: Number(SMTP_PORT),
-  secure: Number(SMTP_PORT) === 465,
+  service: "gmail",
   auth: {
-    user: SMTP_USER,
-    pass: SMTP_PASS,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -24,7 +22,6 @@ function formatSection(title: string, value: string) {
 }
 
 export async function sendApplicationEmail(data: ApplicationData) {
-  const EMAIL_FROM = `"EASF Application" <${data.email}>`;
   const html = `
     <h1>New Scholarship Application</h1>
     <p>A new applicant has submitted the scholarship form.</p>
@@ -81,7 +78,7 @@ Academic Results Uploaded: ${data.academicResults ? "Yes" : "No"}
 
   try {
     const info = await transporter.sendMail({
-      from: EMAIL_FROM,
+      from: `"${data.fullName}" <${EMAIL_USER}>`,
       to: EMAIL_TO,
       subject: `New EASF Application from ${data.fullName}`,
       replyTo: data.email,
@@ -89,7 +86,12 @@ Academic Results Uploaded: ${data.academicResults ? "Yes" : "No"}
       html,
     });
 
-    return { success: true, info };
+    return {
+      success: true,
+      info,
+      sentFrom: data.email,
+      applicantFrom: data.email,
+    };
   } catch (error) {
     return {
       success: false,

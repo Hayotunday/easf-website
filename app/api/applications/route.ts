@@ -14,13 +14,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const emailResult = await sendApplicationEmail(data);
-    if (!emailResult.success) {
-      return NextResponse.json(
-        { success: false, error: emailResult.error },
-        { status: 500 },
-      );
-    }
     const firestoreResult = await submitApplication(data);
     if (!firestoreResult.success) {
       return NextResponse.json(
@@ -29,9 +22,22 @@ export async function POST(request: Request) {
       );
     }
 
+    const emailResult = await sendApplicationEmail(data);
+    if (!emailResult.success) {
+      return NextResponse.json(
+        { success: false, error: emailResult.error },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json({
       success: true,
       applicationId: firestoreResult.applicationId,
+      email: {
+        sentFrom: emailResult.sentFrom,
+        applicantFrom: emailResult.applicantFrom,
+        info: emailResult.info,
+      },
     });
   } catch (error) {
     return NextResponse.json(

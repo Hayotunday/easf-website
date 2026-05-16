@@ -31,7 +31,8 @@ export default function Newsletter() {
             Stay Connected
           </h2>
           <p className="text-lg md:text-xl text-white/80 mb-12">
-            Get updates on new opportunities and scholar success stories directly to your inbox.
+            Get updates on new opportunities and scholar success stories
+            directly to your inbox.
           </p>
         </motion.div>
 
@@ -41,7 +42,7 @@ export default function Newsletter() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
-          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto h-9"
         >
           <input
             type="email"

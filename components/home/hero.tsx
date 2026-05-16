@@ -30,7 +30,7 @@ export default function Hero() {
   return (
     <section
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/images/hero-students.jpg')" }}
+      style={{ backgroundImage: "url('/images/hero-students.svg')" }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/75 to-primary/85" />
 
@@ -61,14 +61,17 @@ export default function Hero() {
           className="text-lg md:text-xl max-w-2xl mx-auto mb-12 text-white/90 leading-relaxed"
         >
           Education for Africa Scholarship Foundation (EASF) provides{" "}
-          <span className="font-semibold text-gold">100% scholarships</span>,
-          {" "}mentorship, and support to high-achieving African students.
+          <span className="font-semibold text-gold">100% scholarships</span>,{" "}
+          mentorship, and support to high-achieving African students.
         </motion.p>
 
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: 0.5 } } }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { delay: 0.5 } },
+          }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Button

@@ -1,18 +1,14 @@
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { firestore } from "./firebase";
 import type { ApplicationData } from "@/types/application-types";
 
 export async function submitApplication(data: ApplicationData) {
-  console.log("Submitting form");
   try {
-    console.log("submitting 1");
-    const docRef = await addDoc(collection(firestore, "applications"), {
+    const docRef = await firestore.collection("applications").add({
       ...data,
-      submittedAt: serverTimestamp(),
+      submittedAt: new Date().toISOString(),
       status: "pending",
     });
 
-    console.log("submitting 2");
     return {
       success: true,
       applicationId: docRef.id,
