@@ -2,8 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
+import type { ApplicationData } from "@/types/application-types";
 
-export default function ReviewSubmit() {
+type Props = {
+  data: ApplicationData;
+};
+
+export default function ReviewSubmit({ data }: Props) {
   return (
     <div className="space-y-8">
       <div className="text-center">
@@ -23,11 +28,13 @@ export default function ReviewSubmit() {
             <h3 className="font-semibold mb-4">Personal Information</h3>
             <div className="grid grid-cols-2 gap-y-4 text-sm">
               <p className="text-muted-foreground">Full Name:</p>
-              <p className="font-medium">[Your Full Name]</p>
+              <p className="font-medium">{data.fullName || "—"}</p>
               <p className="text-muted-foreground">Email:</p>
-              <p className="font-medium">[your@email.com]</p>
+              <p className="font-medium">{data.email || "—"}</p>
+              <p className="text-muted-foreground">Phone:</p>
+              <p className="font-medium">{data.phone || "—"}</p>
               <p className="text-muted-foreground">Nationality:</p>
-              <p className="font-medium">Nigeria</p>
+              <p className="font-medium">{data.nationality || "—"}</p>
             </div>
           </CardContent>
         </Card>
@@ -38,11 +45,15 @@ export default function ReviewSubmit() {
             <h3 className="font-semibold mb-4">Academic Details</h3>
             <div className="grid grid-cols-2 gap-y-4 text-sm">
               <p className="text-muted-foreground">Program:</p>
-              <p className="font-medium">Undergraduate Degree</p>
+              <p className="font-medium">{data.program || "—"}</p>
               <p className="text-muted-foreground">Course:</p>
-              <p className="font-medium">Computer Science</p>
+              <p className="font-medium">{data.courseOfStudy || "—"}</p>
               <p className="text-muted-foreground">Study Mode:</p>
-              <p className="font-medium">Full Time</p>
+              <p className="font-medium">
+                {data.studyMode === "full-time" ? "Full Time" : "Part Time"}
+              </p>
+              <p className="text-muted-foreground">Institution:</p>
+              <p className="font-medium">{data.institution || "—"}</p>
             </div>
           </CardContent>
         </Card>
@@ -51,9 +62,16 @@ export default function ReviewSubmit() {
         <Card>
           <CardContent className="p-6">
             <h3 className="font-semibold mb-4">Essays &amp; Statements</h3>
-            <p className="text-sm text-muted-foreground">
-              6 essay questions completed • All responses provided
-            </p>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              {data.essays.map((e, i) => (
+                <div key={i}>
+                  <strong>Question {i + 1}:</strong>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {e || "(not provided)"}
+                  </p>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 
@@ -61,13 +79,19 @@ export default function ReviewSubmit() {
         <Card>
           <CardContent className="p-6">
             <h3 className="font-semibold mb-4">Documents Uploaded</h3>
-            <div className="flex items-center gap-3 text-sm text-green-600">
-              <CheckCircle className="h-5 w-5" />
-              Passport Photograph
-            </div>
-            <div className="flex items-center gap-3 text-sm text-green-600 mt-2">
-              <CheckCircle className="h-5 w-5" />
-              Academic Results
+            <div className="flex flex-col gap-3 text-sm">
+              <div className="flex items-center gap-3 text-green-600">
+                <CheckCircle className="h-5 w-5" />
+                <span>
+                  {data.passportPhoto?.name ?? "No passport photo uploaded"}
+                </span>
+              </div>
+              <div className="flex items-center gap-3 text-green-600">
+                <CheckCircle className="h-5 w-5" />
+                <span>
+                  {data.academicResults?.name ?? "No academic results uploaded"}
+                </span>
+              </div>
             </div>
           </CardContent>
         </Card>

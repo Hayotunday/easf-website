@@ -47,12 +47,12 @@ export default function RootLayout({
         )}
         suppressHydrationWarning={true}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <Navbar />
-          {children}
-          <Footer />
-          <Toaster position="top-center" richColors />
-        </ThemeProvider>
+        {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
+        <Navbar />
+        {children}
+        <Footer />
+        <Toaster position="top-center" richColors />
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );

@@ -13,36 +13,46 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { toast } from "sonner";
+import type {
+  ApplicationData,
+  BiodataFormValues,
+} from "@/types/application-types";
+
+type Props = {
+  data: ApplicationData;
+  onUpdate: (updates: Partial<ApplicationData>) => void;
+  onNext: () => void;
+  onPrev?: () => void;
+};
 
 const biodataSchema = z.object({
   fullName: z.string().min(3, "Full name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Valid phone number is required"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
-  gender: z.enum(["male", "female", "other"]),
+  gender: z.enum(["male", "female"]),
   address: z.string().min(10, "Address is required"),
   nationality: z.string().min(2, "Nationality is required"),
 });
 
-type BiodataFormValues = z.infer<typeof biodataSchema>;
-
-export default function BiodataForm() {
+export default function BiodataForm({ data, onUpdate, onNext, onPrev }: Props) {
   const form = useForm<BiodataFormValues>({
     resolver: zodResolver(biodataSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
-      phone: "",
-      dateOfBirth: "",
-      gender: "male",
-      address: "",
-      nationality: "Nigeria",
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      dateOfBirth: data.dateOfBirth,
+      gender: data.gender,
+      address: data.address,
+      nationality: data.nationality,
     },
   });
 
-  const onSubmit = (data: BiodataFormValues) => {
-    console.log("Biodata Submitted:", data);
+  const onSubmit = (formData: BiodataFormValues) => {
+    onUpdate(formData);
     toast.success("Personal information saved successfully!");
+    onNext();
   };
 
   return (
@@ -125,7 +135,7 @@ export default function BiodataForm() {
           <RadioGroup
             value={form.watch("gender")}
             onValueChange={(value) =>
-              form.setValue("gender", value as "male" | "female" | "other")
+              form.setValue("gender", value as "male" | "female")
             }
             className="flex gap-6"
           >

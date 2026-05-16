@@ -20,6 +20,10 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { toast } from "sonner";
+import type {
+  ApplicationData,
+  AcademicFormValues,
+} from "@/types/application-types";
 
 const academicSchema = z.object({
   program: z.string().min(1, "Please select a program"),
@@ -31,25 +35,36 @@ const academicSchema = z.object({
   intendedGraduation: z.string().min(1, "Expected graduation year is required"),
 });
 
-type AcademicFormValues = z.infer<typeof academicSchema>;
+type Props = {
+  data: ApplicationData;
+  onUpdate: (updates: Partial<ApplicationData>) => void;
+  onNext: () => void;
+  onPrev?: () => void;
+};
 
-export default function AcademicDetailsForm() {
+export default function AcademicDetailsForm({
+  data,
+  onUpdate,
+  onNext,
+  onPrev,
+}: Props) {
   const form = useForm<AcademicFormValues>({
     resolver: zodResolver(academicSchema),
     defaultValues: {
-      program: "",
-      studyMode: "full-time",
-      courseOfStudy: "",
-      institution: "",
-      previousSchool: "",
-      olevelGrade: "",
-      intendedGraduation: "",
+      program: data.program,
+      studyMode: data.studyMode,
+      courseOfStudy: data.courseOfStudy,
+      institution: data.institution,
+      previousSchool: data.previousSchool,
+      olevelGrade: data.olevelGrade,
+      intendedGraduation: data.intendedGraduation,
     },
   });
 
-  const onSubmit = (data: AcademicFormValues) => {
-    console.log("Academic Details Submitted:", data);
+  const onSubmit = (formData: AcademicFormValues) => {
+    onUpdate(formData);
     toast.success("Academic information saved successfully!");
+    onNext();
   };
 
   return (
