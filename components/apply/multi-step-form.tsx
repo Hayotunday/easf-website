@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -34,6 +34,14 @@ export default function MultiStepForm() {
   const next = () => setStep((s) => Math.min(steps.length - 1, s + 1));
   const prev = () => setStep((s) => Math.max(0, s - 1));
 
+  // Auto-scroll to the top of the form whenever the step changes
+  useEffect(() => {
+    const el = document.getElementById("apply-form");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [step]);
+
   const onUpdate = (updates: Partial<ApplicationData>) => {
     setApplicationData((prev) => ({ ...prev, ...updates }));
   };
@@ -43,10 +51,6 @@ export default function MultiStepForm() {
     setSubmissionSuccess(false);
     setPdfDownloaded(false);
     setStep(0);
-    setTimeout(() => {
-      const el = document.getElementById("apply-form");
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50);
   };
 
   const uploadToCloudinary = async (file: File) => {
