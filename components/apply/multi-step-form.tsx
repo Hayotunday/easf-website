@@ -52,20 +52,18 @@ export default function MultiStepForm() {
   const uploadToCloudinary = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "easf_uploads",
-    );
 
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "easf"}/image/upload`,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
 
-    if (!response.ok) throw new Error("Cloudinary upload failed");
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const message = errorData.error || "Upload failed";
+      throw new Error(message);
+    }
+
     const json = await response.json();
     return json.secure_url;
   };
