@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ApplicationData } from "@/types/application-types";
+import { questions } from "@/lib/data";
 
 interface ApplicationWithId extends ApplicationData {
   id: string;
@@ -104,7 +105,6 @@ export default function AdminApplicationsPage() {
     if (filteredApplications.length === 0) return;
 
     const headers = [
-      "ID",
       "Full Name",
       "Email",
       "Phone",
@@ -121,11 +121,10 @@ export default function AdminApplicationsPage() {
       "Intended Graduation",
       "Passport Photo",
       "Academic Results",
-      "Essays",
+      ...questions.map((q, i) => `Essay ${i + 1}: ${q.substring(0, 50)}...`),
     ];
 
     const rows = filteredApplications.map((app) => [
-      app.id,
       app.fullName,
       app.email,
       app.phone,
@@ -136,13 +135,18 @@ export default function AdminApplicationsPage() {
       app.program,
       app.studyMode,
       app.courseOfStudy,
-      app.institution,
+      app.vocationalCourse,
       app.previousSchool,
       app.olevelGrade,
-      app.intendedGraduation,
+      app.yearGraduation,
       app.passportPhoto ? "Yes" : "No",
       app.academicResults ? "Yes" : "No",
-      app.essays?.join("; ") || "",
+      app.essays?.[0] || "",
+      app.essays?.[1] || "",
+      app.essays?.[2] || "",
+      app.essays?.[3] || "",
+      app.essays?.[4] || "",
+      app.essays?.[5] || "",
     ]);
 
     const csvContent = [
@@ -217,7 +221,7 @@ export default function AdminApplicationsPage() {
     );
   }
 
-  if (loading) {
+  if (loading && applications.length === 0) {
     return <div className="p-8">Loading applications...</div>;
   }
 
@@ -232,16 +236,25 @@ export default function AdminApplicationsPage() {
               {filteredApplications.length}
             </p>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setAuthenticated(false);
-              setApplications([]);
-              setPassword("");
-            }}
-          >
-            Logout
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={fetchApplications}
+              disabled={loading}
+            >
+              {loading ? "Reloading..." : "Reload Data"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAuthenticated(false);
+                setApplications([]);
+                setPassword("");
+              }}
+            >
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -359,7 +372,9 @@ export default function AdminApplicationsPage() {
                       <td className="px-4 py-3 text-sm">{app.email}</td>
                       <td className="px-4 py-3 text-sm">{app.program}</td>
                       <td className="px-4 py-3 text-sm">{app.courseOfStudy}</td>
-                      <td className="px-4 py-3 text-sm">{app.institution}</td>
+                      <td className="px-4 py-3 text-sm">
+                        {app.vocationalCourse}
+                      </td>
                       <td className="px-4 py-3 text-center">
                         <Button
                           size="sm"
@@ -394,147 +409,166 @@ export default function AdminApplicationsPage() {
                 </button>
               </div>
 
-              <div className="p-6 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Full Name
-                    </label>
-                    <p className="text-gray-900">{selectedApp.fullName}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Email
-                    </label>
-                    <p className="text-gray-900">{selectedApp.email}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Phone
-                    </label>
-                    <p className="text-gray-900">{selectedApp.phone}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Date of Birth
-                    </label>
-                    <p className="text-gray-900">{selectedApp.dateOfBirth}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Gender
-                    </label>
-                    <p className="text-gray-900">{selectedApp.gender}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Nationality
-                    </label>
-                    <p className="text-gray-900">{selectedApp.nationality}</p>
-                  </div>
-                </div>
-
-                <div className="border-t pt-4">
-                  <h3 className="font-semibold text-lg mb-3">
-                    Address Information
-                  </h3>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Address
-                    </label>
-                    <p className="text-gray-900">{selectedApp.address}</p>
-                  </div>
-                </div>
-
-                <div className="border-t pt-4">
-                  <h3 className="font-semibold text-lg mb-3">
-                    Academic Information
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700">
-                        Program
-                      </label>
-                      <p className="text-gray-900">{selectedApp.program}</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700">
-                        Study Mode
-                      </label>
-                      <p className="text-gray-900">{selectedApp.studyMode}</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700">
-                        Course of Study
-                      </label>
-                      <p className="text-gray-900">
-                        {selectedApp.courseOfStudy}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700">
-                        Institution
-                      </label>
-                      <p className="text-gray-900">{selectedApp.institution}</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700">
-                        Previous School
-                      </label>
-                      <p className="text-gray-900">
-                        {selectedApp.previousSchool}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700">
-                        O-Level Grade
-                      </label>
-                      <p className="text-gray-900">{selectedApp.olevelGrade}</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700">
-                        Intended Graduation
-                      </label>
-                      <p className="text-gray-900">
-                        {selectedApp.intendedGraduation}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t pt-4">
-                  <h3 className="font-semibold text-lg mb-3">Essays</h3>
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    {selectedApp.essays?.map((essay, index) => (
-                      <div key={index}>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">
-                          Question {index + 1}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700">
+                        Full Name
+                      </label>
+                      <p className="text-gray-900">{selectedApp.fullName}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700">
+                        Email
+                      </label>
+                      <p className="text-gray-900">{selectedApp.email}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700">
+                        Phone
+                      </label>
+                      <p className="text-gray-900">{selectedApp.phone}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700">
+                        Date of Birth
+                      </label>
+                      <p className="text-gray-900">{selectedApp.dateOfBirth}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700">
+                        Gender
+                      </label>
+                      <p className="text-gray-900 capitalize">
+                        {selectedApp.gender}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700">
+                        Nationality
+                      </label>
+                      <p className="text-gray-900">{selectedApp.nationality}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700">
+                        Address
+                      </label>
+                      <p className="text-gray-900 whitespace-pre-wrap">
+                        {selectedApp.address}
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Program
                         </label>
-                        <p className="text-gray-900 whitespace-pre-wrap">
-                          {essay}
+                        <p className="text-gray-900">{selectedApp.program}</p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Study Mode
+                        </label>
+                        <p className="text-gray-900">{selectedApp.studyMode}</p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Course of Study
+                        </label>
+                        <p className="text-gray-900">
+                          {selectedApp.courseOfStudy}
                         </p>
                       </div>
-                    ))}
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Vocational Track
+                        </label>
+                        <p className="text-gray-900">
+                          {selectedApp.vocationalCourse || "—"}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Previous School
+                        </label>
+                        <p className="text-gray-900">
+                          {selectedApp.previousSchool || "—"}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Graduation Year
+                        </label>
+                        <p className="text-gray-900">
+                          {selectedApp.yearGraduation || "—"}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="border-t pt-4">
-                  <h3 className="font-semibold text-lg mb-3">
-                    Document Uploads
-                  </h3>
-                  <div>
-                    <p className="text-sm">
-                      <strong>Passport Photo:</strong>{" "}
-                      {selectedApp.passportPhoto
-                        ? "✓ Uploaded"
-                        : "✗ Not uploaded"}
-                    </p>
-                    <p className="text-sm">
-                      <strong>Academic Results:</strong>{" "}
-                      {selectedApp.academicResults
-                        ? "✓ Uploaded"
-                        : "✗ Not uploaded"}
-                    </p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 border-t pt-6">
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-lg">Essays</h3>
+                    <div className="space-y-4">
+                      {selectedApp.essays?.map((essay, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-50 p-4 rounded-lg border"
+                        >
+                          <p className="text-sm font-semibold text-gray-700 mb-2">
+                            {index + 1}. {questions[index]}
+                          </p>
+                          <p className="text-gray-900 whitespace-pre-wrap text-sm">
+                            {essay || "(not provided)"}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-lg">
+                      Uploaded Documents
+                    </h3>
+                    <div className="bg-white rounded-xl border p-4">
+                      <p className="text-sm font-semibold text-gray-700">
+                        Passport Photo
+                      </p>
+                      {selectedApp.passportPhoto?.url ? (
+                        <img
+                          src={selectedApp.passportPhoto.url}
+                          alt="Passport photo"
+                          className="mt-3 max-h-56 w-full object-contain rounded-lg border"
+                        />
+                      ) : (
+                        <p className="text-gray-600 mt-2">Not uploaded</p>
+                      )}
+                      <p className="mt-3 text-sm text-gray-500">
+                        File: {selectedApp.passportPhoto?.name || "—"}
+                      </p>
+                    </div>
+
+                    <div className="bg-white rounded-xl border p-4">
+                      <p className="text-sm font-semibold text-gray-700">
+                        Academic Results
+                      </p>
+                      {selectedApp.academicResults?.url ? (
+                        <img
+                          src={selectedApp.academicResults.url}
+                          alt="Academic results"
+                          className="mt-3 max-h-56 w-full object-contain rounded-lg border"
+                        />
+                      ) : (
+                        <p className="text-gray-600 mt-2">Not uploaded</p>
+                      )}
+                      <p className="mt-3 text-sm text-gray-500">
+                        File: {selectedApp.academicResults?.name || "—"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

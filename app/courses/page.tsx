@@ -101,7 +101,7 @@ export default function CoursesPage() {
           Ready to transform your future?
         </h3>
         <p className="text-lg mb-8 max-w-md mx-auto">
-          Applications for the 2026/2027 session are now open.
+          Applications for the session are now open.
         </p>
         <Button
           size="lg"

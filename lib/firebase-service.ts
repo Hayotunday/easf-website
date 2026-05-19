@@ -3,11 +3,25 @@ import type { ApplicationData } from "@/types/application-types";
 
 export async function submitApplication(data: ApplicationData) {
   try {
-    const docRef = await firestore.collection("applications").add({
+    const sanitizeMeta = (meta: ApplicationData["passportPhoto"]): any =>
+      meta
+        ? {
+            name: meta.name,
+            type: meta.type,
+            size: meta.size,
+            hash: meta.url,
+          }
+        : null;
+
+    const payload = {
       ...data,
+      passportPhoto: sanitizeMeta(data.passportPhoto),
+      academicResults: sanitizeMeta(data.academicResults),
       submittedAt: new Date().toISOString(),
       status: "pending",
-    });
+    };
+
+    const docRef = await firestore.collection("applications").add(payload);
 
     return {
       success: true,

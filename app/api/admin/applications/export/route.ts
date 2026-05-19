@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import * as XLSX from "xlsx";
 import type { ApplicationData } from "@/types/application-types";
+import { questions } from "@/lib/data";
 
 interface ApplicationWithId extends ApplicationData {
   id: string;
@@ -20,7 +21,6 @@ export async function POST(request: Request) {
 
     // Prepare data for Excel
     const excelData = applications.map((app) => ({
-      ID: app.id,
       "Full Name": app.fullName,
       Email: app.email,
       Phone: app.phone,
@@ -31,13 +31,18 @@ export async function POST(request: Request) {
       Program: app.program,
       "Study Mode": app.studyMode,
       "Course of Study": app.courseOfStudy,
-      Institution: app.institution,
+      Institution: app.previousSchool,
       "Previous School": app.previousSchool,
       "O-Level Grade": app.olevelGrade,
-      "Intended Graduation": app.intendedGraduation,
+      "Intended Graduation": app.yearGraduation,
       "Passport Photo": app.passportPhoto ? "Yes" : "No",
       "Academic Results": app.academicResults ? "Yes" : "No",
-      Essays: app.essays?.join("; ") || "",
+      [`Q1: ${questions[0].substring(0, 50)}...`]: app.essays?.[0] || "",
+      [`Q2: ${questions[1].substring(0, 50)}...`]: app.essays?.[1] || "",
+      [`Q3: ${questions[2].substring(0, 50)}...`]: app.essays?.[2] || "",
+      [`Q4: ${questions[3].substring(0, 50)}...`]: app.essays?.[3] || "",
+      [`Q5: ${questions[4].substring(0, 50)}...`]: app.essays?.[4] || "",
+      [`Q6: ${questions[5].substring(0, 50)}...`]: app.essays?.[5] || "",
       "Created At": app.createdAt || "",
     }));
 
@@ -47,7 +52,6 @@ export async function POST(request: Request) {
 
     // Set column widths
     const columnWidths = [
-      { wch: 20 }, // ID
       { wch: 20 }, // Full Name
       { wch: 25 }, // Email
       { wch: 15 }, // Phone
@@ -64,7 +68,7 @@ export async function POST(request: Request) {
       { wch: 15 }, // Intended Graduation
       { wch: 12 }, // Passport Photo
       { wch: 12 }, // Academic Results
-      { wch: 40 }, // Essays
+      ...questions.map(() => ({ wch: 50 })), // Expand all 6 Essays
       { wch: 20 }, // Created At
     ];
 

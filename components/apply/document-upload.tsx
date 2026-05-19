@@ -26,13 +26,30 @@ export default function DocumentUpload({ data, onUpdate, onNext }: Props) {
   const passportRef = useRef<HTMLInputElement | null>(null);
   const resultsRef = useRef<HTMLInputElement | null>(null);
 
-  const handleFile = (
+  const handleFile = async (
     e: React.ChangeEvent<HTMLInputElement>,
     key: keyof DocumentUploadValues,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const meta = { name: file.name, type: file.type, size: file.size };
+
+    // Generate new file name based on applicant's full name
+    const applicantName = data.fullName
+      ? data.fullName.replace(/\s+/g, "").toLowerCase()
+      : "applicant";
+    const fileExtension = file.name.split(".").pop();
+    const newFileName =
+      key === "passportPhoto"
+        ? `${applicantName}_passport.${fileExtension}`
+        : `${applicantName}_result.${fileExtension}`;
+
+    const meta = {
+      name: newFileName,
+      type: file.type,
+      size: file.size,
+      file,
+    };
+
     onUpdate({ [key]: meta } as Partial<ApplicationData>);
     toast.success(`${file.name} selected`);
   };

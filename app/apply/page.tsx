@@ -10,9 +10,7 @@ export default function ApplyPage() {
           <h1 className="font-heading text-5xl font-bold mb-4">
             Complete Your Application
           </h1>
-          <p className="text-muted-foreground">
-            2026/2027 Scholarship Application
-          </p>
+          <p className="text-muted-foreground">Scholarship Application</p>
         </div>
         <HowToApply />
         <MultiStepForm />

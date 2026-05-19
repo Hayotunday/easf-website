@@ -42,7 +42,7 @@ export default function Hero() {
           className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-6 py-2.5 rounded-full text-sm font-medium mb-8 border border-white/20"
         >
           <span className="w-2 h-2 bg-gold rounded-full" />
-          2026/2027 Enrolment Session Now Open
+          Enrolment Session Now Open
         </motion.div>
 
         <motion.h1

@@ -25,14 +25,33 @@ import type {
   AcademicFormValues,
 } from "@/types/application-types";
 
+const vocationalCourses = [
+  "Computer Repair & Maintenance Tech",
+  "Paints Production & Painting Tech",
+  "Electrical Installation Tech",
+  "Catering",
+  "P.O.P Installation Tech",
+  "Garment Making & Design",
+];
+
+const academicCourses = [
+  "Accountancy",
+  "Business Administration",
+  "Science Lab Tech",
+  "Computer Science",
+  "Mass Communication",
+  "Electrical Electronics",
+  "Computer Engineering",
+];
+
 const academicSchema = z.object({
   program: z.string().min(1, "Please select a program"),
   studyMode: z.enum(["full-time", "part-time"]),
   courseOfStudy: z.string().min(1, "Course of study is required"),
-  institution: z.string().min(2, "Preferred institution is required"),
+  vocationalCourse: z.string().min(2, "Preferred vocationalCourse is required"),
   previousSchool: z.string().min(3, "Previous school is required"),
   olevelGrade: z.string().min(1, "O-Level grade summary is required"),
-  intendedGraduation: z.string().min(1, "Expected graduation year is required"),
+  yearGraduation: z.string().min(1, "Expected graduation year is required"),
 });
 
 type Props = {
@@ -54,10 +73,10 @@ export default function AcademicDetailsForm({
       program: data.program,
       studyMode: data.studyMode,
       courseOfStudy: data.courseOfStudy,
-      institution: data.institution,
+      vocationalCourse: data.vocationalCourse,
       previousSchool: data.previousSchool,
       olevelGrade: data.olevelGrade,
-      intendedGraduation: data.intendedGraduation,
+      yearGraduation: data.yearGraduation,
     },
   });
 
@@ -74,7 +93,10 @@ export default function AcademicDetailsForm({
           {/* Program Selector */}
           <Field>
             <FieldLabel>Program *</FieldLabel>
-            <Select onValueChange={(value) => form.setValue("program", value)}>
+            <Select
+              value={form.watch("program")}
+              onValueChange={(value) => form.setValue("program", value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select Program" />
               </SelectTrigger>
@@ -101,6 +123,7 @@ export default function AcademicDetailsForm({
           <Field>
             <FieldLabel>Study Mode *</FieldLabel>
             <Select
+              value={form.watch("studyMode")}
               defaultValue="full-time"
               onValueChange={(value) =>
                 form.setValue("studyMode", value as "full-time" | "part-time")
@@ -121,11 +144,21 @@ export default function AcademicDetailsForm({
             <FieldLabel htmlFor="courseOfStudy">
               Course of Study / Field *
             </FieldLabel>
-            <Input
-              id="courseOfStudy"
-              placeholder="e.g. Computer Science, Medicine, Business Administration"
-              {...form.register("courseOfStudy")}
-            />
+            <Select
+              value={form.watch("courseOfStudy")}
+              onValueChange={(value) => form.setValue("courseOfStudy", value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Course of Study" />
+              </SelectTrigger>
+              <SelectContent>
+                {academicCourses.map((course, id) => (
+                  <SelectItem key={`${id}`} value={course}>
+                    {course}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FieldError
               errors={
                 form.formState.errors.courseOfStudy
@@ -135,15 +168,27 @@ export default function AcademicDetailsForm({
             />
           </Field>
 
-          {/* Preferred Institution */}
+          {/* Preferred Vocational Course */}
           <Field>
-            <FieldLabel htmlFor="institution">Preferred Institution</FieldLabel>
-            <Input
-              id="institution"
-              placeholder="e.g. University of Lagos, Covenant University"
-              {...form.register("institution")}
-            />
-            <FieldDescription>Leave blank if flexible</FieldDescription>
+            <FieldLabel>Vocational Course</FieldLabel>
+            <Select
+              value={form.watch("vocationalCourse")}
+              onValueChange={(value) =>
+                form.setValue("vocationalCourse", value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Preferred Vocational Course" />
+              </SelectTrigger>
+              <SelectContent>
+                {vocationalCourses.map((course, id) => (
+                  <SelectItem key={`${id}`} value={course}>
+                    {course}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {/* <FieldDescription>Leave blank if flexible</FieldDescription> */}
           </Field>
         </FieldGroup>
       </FieldSet>
@@ -191,14 +236,14 @@ export default function AcademicDetailsForm({
 
           {/* Expected Graduation */}
           <Field>
-            <FieldLabel htmlFor="intendedGraduation">
-              Expected Graduation Year
+            <FieldLabel htmlFor="yearGraduation">
+              Year of Graduation (Sec. level) *
             </FieldLabel>
             <Input
-              id="intendedGraduation"
+              id="yearGraduation"
               type="number"
-              placeholder="2029"
-              {...form.register("intendedGraduation")}
+              placeholder="2026"
+              {...form.register("yearGraduation")}
             />
           </Field>
         </FieldGroup>

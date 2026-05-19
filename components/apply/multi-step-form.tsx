@@ -29,6 +29,7 @@ export default function MultiStepForm() {
   );
   const [submitting, setSubmitting] = useState(false);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  const [pdfDownloaded, setPdfDownloaded] = useState(false);
 
   const next = () => setStep((s) => Math.min(steps.length - 1, s + 1));
   const prev = () => setStep((s) => Math.max(0, s - 1));
@@ -37,16 +38,82 @@ export default function MultiStepForm() {
     setApplicationData((prev) => ({ ...prev, ...updates }));
   };
 
+  const startNewApplication = () => {
+    setApplicationData(defaultApplicationData);
+    setSubmissionSuccess(false);
+    setPdfDownloaded(false);
+    setStep(0);
+    setTimeout(() => {
+      const el = document.getElementById("apply-form");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  };
+
+  const uploadToCloudinary = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "easf_uploads",
+    );
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "easf"}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    if (!response.ok) throw new Error("Cloudinary upload failed");
+    const json = await response.json();
+    return json.secure_url;
+  };
+
   const submitApplication = async () => {
     setSubmitting(true);
     try {
+      let finalData = { ...applicationData };
+
+      if (finalData.passportPhoto?.file) {
+        toast.info("Uploading passport photo...");
+        const url = await uploadToCloudinary(finalData.passportPhoto.file);
+        finalData.passportPhoto = {
+          ...finalData.passportPhoto,
+          url,
+          file: undefined,
+        };
+      }
+
+      if (finalData.academicResults?.file) {
+        toast.info("Uploading academic results...");
+        const url = await uploadToCloudinary(finalData.academicResults.file);
+        finalData.academicResults = {
+          ...finalData.academicResults,
+          url,
+          file: undefined,
+        };
+      }
+
+      console.log("Submitting Application:", finalData);
+
       const res = await fetch("/api/applications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(applicationData),
+        body: JSON.stringify(finalData),
       });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || "Submission failed");
+
+      if (!res.ok) {
+        let errorText = "Submission failed";
+        try {
+          const json = await res.json();
+          errorText = json?.error || errorText;
+        } catch {
+          errorText = `Server Error (${res.status}): Please try again later.`;
+        }
+        throw new Error(errorText);
+      }
+
       toast.success("Application submitted successfully!");
       setSubmissionSuccess(true);
       setStep(steps.length - 1);
@@ -104,7 +171,13 @@ export default function MultiStepForm() {
           onPrev={prev}
         />
       )}
-      {step === 4 && <ReviewSubmit data={applicationData} />}
+      {step === 4 && (
+        <ReviewSubmit
+          data={applicationData}
+          pdfDownloaded={pdfDownloaded}
+          onPdfDownloaded={() => setPdfDownloaded(true)}
+        />
+      )}
       {step === 5 && submissionSuccess && (
         <div className="space-y-8 text-center">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-700">
@@ -121,6 +194,12 @@ export default function MultiStepForm() {
           >
             Return Home
           </Button>
+          <Button
+            onClick={startNewApplication}
+            className="mx-auto bg-gold hover:bg-amber-500 text-primary px-10"
+          >
+            Fill New Application
+          </Button>
         </div>
       )}
 
@@ -132,12 +211,16 @@ export default function MultiStepForm() {
           <Button
             onClick={step === steps.length - 2 ? submitApplication : next}
             className="bg-gold hover:bg-amber-500 text-primary px-10"
-            disabled={submitting}
+            disabled={
+              submitting || (step === steps.length - 2 && !pdfDownloaded)
+            }
           >
             {step === steps.length - 2
               ? submitting
                 ? "Submitting..."
-                : "Submit Application"
+                : pdfDownloaded
+                  ? "Submit Application"
+                  : "Download PDF Required"
               : "Continue"}
           </Button>
         </div>

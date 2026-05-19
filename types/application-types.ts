@@ -2,6 +2,8 @@ export type FileMetadata = {
   name: string;
   type: string;
   size: number;
+  file?: File;
+  url?: string;
 } | null;
 
 export type ApplicationData = {
@@ -15,10 +17,10 @@ export type ApplicationData = {
   program: string;
   studyMode: "full-time" | "part-time";
   courseOfStudy: string;
-  institution: string;
+  vocationalCourse: string;
   previousSchool: string;
   olevelGrade: string;
-  intendedGraduation: string;
+  yearGraduation: string;
   essays: string[];
   passportPhoto: FileMetadata;
   academicResults: FileMetadata;
@@ -35,10 +37,10 @@ export const defaultApplicationData: ApplicationData = {
   program: "",
   studyMode: "full-time",
   courseOfStudy: "",
-  institution: "",
+  vocationalCourse: "",
   previousSchool: "",
   olevelGrade: "",
-  intendedGraduation: "",
+  yearGraduation: "",
   essays: Array(6).fill(""),
   passportPhoto: null,
   academicResults: null,
@@ -60,10 +62,10 @@ export type AcademicFormValues = Pick<
   | "program"
   | "studyMode"
   | "courseOfStudy"
-  | "institution"
+  | "vocationalCourse"
   | "previousSchool"
   | "olevelGrade"
-  | "intendedGraduation"
+  | "yearGraduation"
 >;
 
 export type EssayFormValues = {
