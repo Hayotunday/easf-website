@@ -97,7 +97,7 @@ export default function MultiStepForm() {
         };
       }
 
-      console.log("Submitting Application:", finalData);
+      // console.log("Submitting Application:", finalData);
 
       const res = await fetch("/api/applications", {
         method: "POST",
